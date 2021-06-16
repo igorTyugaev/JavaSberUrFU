@@ -1,26 +1,33 @@
 package com.company.tasks;
 
-import com.company.utils.TestData;
-
-import java.util.Collections;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.HashMap;
 
 public class Task_3 {
 
     public static String getWinnerName(String text) {
-        Map<Integer, String> items = new TreeMap<>(Collections.reverseOrder());
+        HashMap<String, Integer> standings = new HashMap<>();
         String[] strArray = text.replaceAll("[^\\w\\s,]", "").trim().split(",");
+        String nameWinner = "The winner is determined!";
+        int scoreWinner = -1;
 
-        for (String line : strArray) {
-            line = line.trim();
-            String[] item = line.split("[\\s]+");
-            items.putIfAbsent(Integer.parseInt(item[1]), item[0]);
+        for (String playerRaw : strArray) {
+            String[] player = playerRaw.trim().split("[\\s]+");
+
+            String namePlayer = player[0];
+            int scorePlayer = Integer.parseInt(player[1]);
+
+            int newScorePlayer = standings.getOrDefault(namePlayer, 0) + scorePlayer;
+
+            if (newScorePlayer > scoreWinner) {
+                scoreWinner = newScorePlayer;
+                nameWinner = namePlayer;
+            }
+
+            standings.put(namePlayer, newScorePlayer);
         }
 
-        String winnerName = items.get(items.keySet().toArray()[0]);
-
-        return winnerName;
+        String result = "Победил " + nameWinner + " со счетом " + scoreWinner + " очков.";
+        return result;
     }
 
     public static void testingTask() {
@@ -30,7 +37,7 @@ public class Task_3 {
         String str = "\"Ivan 5\", \"Petr 3\", \"Alex 10\", \"Petr 8\", \"Ivan 6\", \"Alex 5\", \"Ivan 1\", \"Petr 5\", \"Alex 1\"";
         System.out.println(str);
 
-        System.out.println("Имя победителя: ");
+        System.out.println("Итоги турнирной таблицы: ");
         System.out.println(getWinnerName(str));
 
         System.out.println();
